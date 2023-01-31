@@ -38,6 +38,9 @@
       // NOTE logic assumes there are only two panels
       find(nav, '[data-panel]').forEach(function (panel) {
         panel.classList.toggle('is-active')
+        if (panel.hasAttribute('aria-expanded')) {
+          panel.setAttribute('aria-expanded', !panel.getAttribute('aria-expanded'))
+        }
       })
     })
   }
@@ -78,6 +81,9 @@
     if (navItem === currentPageItem) return
     find(menuPanel, '.nav-item.is-active').forEach(function (el) {
       el.classList.remove('is-active', 'is-current-path', 'is-current-page')
+      if (el.hasAttribute('aria-expanded')) {
+        el.setAttribute('aria-expanded', 'false')
+      }
     })
     navItem.classList.add('is-current-page')
     currentPageItem = navItem
@@ -96,6 +102,9 @@
     while (!(ancestorClasses = ancestor.classList).contains('nav-menu')) {
       if (ancestor.tagName === 'LI' && ancestorClasses.contains('nav-item')) {
         ancestorClasses.add('is-active', 'is-current-path')
+        if (ancestor.hasAttribute('aria-expanded')) {
+          ancestor.setAttribute('aria-expanded', 'true')
+        }
       }
       ancestor = ancestor.parentNode
     }
@@ -103,6 +112,10 @@
   }
 
   function toggleActive () {
+    if (this.hasAttribute('aria-expanded')) {
+      const ariaExpanded = !this.classList.contains('is-active')
+      this.setAttribute('aria-expanded', ariaExpanded)
+    }
     if (this.classList.toggle('is-active')) {
       var padding = parseFloat(window.getComputedStyle(this).marginTop)
       var rect = this.getBoundingClientRect()
